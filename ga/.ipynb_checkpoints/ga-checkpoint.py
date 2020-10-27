@@ -47,8 +47,8 @@ class Ga:
     def log(self, str):
         if self.logKey is True: print(str)
             
-    def imprimirPopulacao(self, populacao):
-        if self.logKey is True:
+    def imprimirPopulacao(self, populacao, optionalKey = None):
+        if self.logKey is True or optionalKey is True:
             for ind in populacao:
                 print(str(ind))
             
@@ -156,6 +156,16 @@ class Ga:
             
         return novaPopulacao
     
+    def analisarParada(self, populacao):
+        primeiroInd = populacao[0]
+        
+        for ind in populacao:
+            if ind != primeiroInd:
+                return False
+        
+        return True
+            
+        
     def run(self):
         self.log("Gerando populacao inicial:")
         populacao = self.gerarPopulacaoInicial()
@@ -164,11 +174,13 @@ class Ga:
         self.imprimirPopulacao(populacao)
         
         for i in range(self.iteracoes):
-            self.log("Iteracao: " + str(i))
+            print("Iteracao: " + str(i))
             populacaoIntermediaria = self.gerarPopulacaoIntermediaria(populacao)
             populacao = self.gerarNovaPopulacao(populacao, populacaoIntermediaria)
             populacao, soma = self.calculaFNorm(populacao)
             populacao = self.calculaFAcm(populacao, soma)
+            status = self.analisarParada(populacao)
+            if (status): break
 
         self.imprimirPopulacao(populacao)
         return populacao
